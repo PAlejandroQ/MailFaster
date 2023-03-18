@@ -4,14 +4,14 @@ from getSecret import GetSecret
 
 getSecret = GetSecret()
 getSecret.readFile("secret.txt")
-email_sender = getSecret.getLine(0)
-email_password = getSecret.getLine(1)
+email_sender = getSecret.getLine(2)
+email_password = getSecret.getLine(3)
 email_receiver = getSecret.getLine(4)
 
 subject = 'Correo dinamico!'
 body = """
-Testeando conexiones.
-READY
+Verificacion final de ambos servicios 
+con selector.
 """
 
 mailMaker = MailMaker()
@@ -21,7 +21,7 @@ mailMaker.setSubject(subject)
 mailMaker.setMesage(body)
 
 mailComunication = MailComunication()
-mailComunication.sendMail(mailMaker,email_password)
+mailComunication.sendMail(mailMaker,email_password, server="outlook")
 
 
 
