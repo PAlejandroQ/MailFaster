@@ -1,7 +1,7 @@
 from MailMaker import  MailMaker
 from MailComunication import MailComunication
 from getSecret import GetSecret
-
+from gui import GUI
 getSecret = GetSecret()
 getSecret.readFile("secret.txt")
 email_sender = getSecret.getLine(2)
@@ -14,14 +14,23 @@ Verificacion final de ambos servicios
 con selector.
 """
 
-mailMaker = MailMaker()
-mailMaker.setSender(email_sender)
-mailMaker.setRecivers(email_receiver)
-mailMaker.setSubject(subject)
-mailMaker.setMesage(body)
+gui = GUI()
+gui.addTextBox("From")
+options = [("Uno","U"),("Multiple","M"),("Grupo","G")]
+gui.addRadioButton("To", options, initValue="U")
+listOptions = ["example1@gmail.com","example2@gmail.com"]
 
-mailComunication = MailComunication()
-mailComunication.sendMail(mailMaker,email_password, server="outlook")
+gui.setMainLoop()
+
+
+# mailMaker = MailMaker()
+# mailMaker.setSender(email_sender)
+# mailMaker.setRecivers(email_receiver)
+# mailMaker.setSubject(subject)
+# mailMaker.setMesage(body)
+
+# mailComunication = MailComunication()
+# mailComunication.sendMail(mailMaker,email_password, server="outlook")
 
 
 
