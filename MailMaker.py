@@ -1,6 +1,7 @@
 import smtplib
 import ssl
 from email.message import EmailMessage
+from CustomException import CustomException
 
 class MailMaker:
     def __init__(self):
@@ -28,10 +29,17 @@ class MailMaker:
         elif isinstance(listAddress, str):
             return listAddress
         else:
-            raise MyCustomException("Input of adress is not list or string")
+            raise CustomException("Input of adress is not list or string")
+    def autoSetJson(self, jsonData):
+        for key in jsonData.keys():
+            if key == 'From':
+                self.setSender(jsonData[key])
+            elif key == 'To':
+                self.setRecivers(jsonData[key])
+            else:
+                print(key)
+                raise CustomException("'From' and 'To' field needed!!!")
     # def getbuildMail(self):
     #     # Add checking of field complete before to call this funcion.
     #     return self.email
 
-class MyCustomException(Exception):
-    pass

@@ -1,6 +1,8 @@
-from tkinter import  *
-from tkinter import ttk
+from tkinter import  StringVar, Frame, Label, Tk, Entry, \
+TOP, LEFT, RIGHT, BOTTOM, X, YES, Radiobutton, Listbox, \
+Button, ttk
 import json
+from CustomException import CustomException
 # Password at the end for security
 fields = ('From', 'To', 'CC','CCO')
 class GUI:
@@ -9,16 +11,16 @@ class GUI:
         self.dataForm = {}
         self.dataJson = {}
         self.lastObject = None
-    def addTextBox(self,field, passSim = None):
+    def addTextBox(self,field, passSim : str = ""):
         row = Frame(self.window)
         lbl = Label(row, width=22, text=field+": ", anchor='w')
         tbx = Entry(row,show=passSim)
-        tbx.insert(0,"Escribe aqui...")
+        tbx.insert(0,"Escriba su email...")
         row.pack(side = TOP, fill = X, padx = 5, pady = 5)
         lbl.pack(side = LEFT)
         tbx.pack(side = RIGHT, expand = YES, fill = X)
         self.dataForm[field] = tbx
-    def addRadioButton(self,field,radio_options:list, initValue = None):
+    def addRadioButton(self,field:str ,radio_options:list, initValue = None):
         # options = [("Uno","U"),("Multiple","M"),("Grupo","G")]
         radioVar = StringVar(value=initValue)
         row = Frame(self.window)
@@ -30,7 +32,7 @@ class GUI:
             Radiobutton(row, text=text, variable=radioVar, value=value, command=self.updateGui).pack(side=LEFT)
             # self.radioButtonList[text] = Radiobutton(row, text=text, variable=radioVar, value=value).pack(side=LEFT)
             # self.radioButtonList[text].pack(side = RIGHT)
-        self.dataForm[field] = radioVar
+        self.dataForm["Type"+field] = radioVar
         self.lastRbtVar = radioVar
         self.updateGui()
     def addListBox(self, field, listOptions):
@@ -57,18 +59,28 @@ class GUI:
         
         self.dataForm[field] = comboBox
         self.lastObject = row
-    def getDataJson(self,e):
+    def addButton(self, field, command):
+        row = Frame(self.window)
+        row.pack(side = BOTTOM, fill = X, padx = 5, pady = 5)
+        button = Button(row, text = field, command=command)
+        button.pack(side = RIGHT, expand = YES, fill = X)
+        # self.dataForm[field] = button
+        # self.lastObject = row
+
+    def getDataJson(self):
+        e = self.dataForm
         for key in e.keys():
             if isinstance(e[key],Entry):
                 self.dataJson[key] = e[key].get()
-            if isinstance(e[key],StringVar):
+            elif isinstance(e[key],StringVar):
                 self.dataJson[key] = e[key].get()
-            if isinstance(e[key],Listbox):
+            elif isinstance(e[key],Listbox):
                 self.dataJson[key] = [e[key].get(i) for i in e[key].curselection()]
-            if isinstance(e[key],ttk.ComboBox):
+            elif isinstance(e[key],ttk.Combobox):
                 self.dataJson[key] = e[key].get()
             else:
-                print("REVISAR OBJETOS GUARDADOS!!!")
+                print(key)
+                raise CustomException("REVISAR OBJETOS GUARDADOS!!!")
         print(self.dataJson)
         self.saveJson(self.dataJson[list(self.dataJson.keys())[0]], self.dataJson)
     def saveJson(self, filename,data):
@@ -79,13 +91,13 @@ class GUI:
     def updateGui(self):
         if self.lastRbtVar.get() == "U":
             self.clearLastObject()
-            self.addComboBox("ToCbx", self.getEmails())
+            self.addComboBox("To", self.getEmails())
         elif self.lastRbtVar.get() == "M":
             self.clearLastObject()
-            self.addListBox("ToLbx", self.getEmails())
+            self.addListBox("To", self.getEmails())
         elif self.lastRbtVar.get() == "G":
             self.clearLastObject()
-            self.addListBox("ToLbx", self.getEmails(True))
+            self.addListBox("To", self.getEmails(True))
         else:
             print("NO SE ESTA DETECTANDO EL CAMBIO DEL RADIOBUTTOM!!!")
     def getEmails(self, asGroup=False):
@@ -97,6 +109,8 @@ class GUI:
     def clearLastObject(self):
         if self.lastObject is not None:
             self.lastObject.pack_forget()
+    def exit(self):
+        return self.window.quit
 
 def formMaker(window, fields):
     dataForm = {}

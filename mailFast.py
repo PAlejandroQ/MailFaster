@@ -18,8 +18,9 @@ gui = GUI()
 gui.addTextBox("From")
 options = [("Uno","U"),("Multiple","M"),("Grupo","G")]
 gui.addRadioButton("To", options, initValue="U")
-listOptions = ["example1@gmail.com","example2@gmail.com"]
-
+gui.addButton("Salir",gui.exit())
+gui.addButton("Enviar",gui.getDataJson)
+gui.addButton("Preview",gui.exit())
 gui.setMainLoop()
 
 
@@ -38,7 +39,7 @@ gui.setMainLoop()
 
 
 class controllerApp:
-    def __init__():
+    def __init__(self):
         # Add check if is Online
         pass
     
