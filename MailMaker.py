@@ -36,9 +36,9 @@ class MailMaker:
                 self.setSender(jsonData[key])
             elif key == 'To':
                 self.setRecivers(jsonData[key])
-            else:
-                print(key)
-                raise CustomException("'From' and 'To' field needed!!!")
+            elif key == 'Subject':
+                self.setSubject(jsonData[key])
+    
     # def getbuildMail(self):
     #     # Add checking of field complete before to call this funcion.
     #     return self.email

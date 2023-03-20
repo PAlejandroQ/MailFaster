@@ -3,6 +3,7 @@ TOP, LEFT, RIGHT, BOTTOM, X, YES, Radiobutton, Listbox, \
 Button, ttk
 import json
 from CustomException import CustomException
+from typing import Literal
 # Password at the end for security
 fields = ('From', 'To', 'CC','CCO')
 class GUI:
@@ -11,12 +12,12 @@ class GUI:
         self.dataForm = {}
         self.dataJson = {}
         self.lastObject = None
-    def addTextBox(self,field, passSim : str = ""):
+    def addTextBox(self,field, passSim : str = "", sideTbx : Literal['left', 'right', 'top', 'bottom']  = TOP):
         row = Frame(self.window)
         lbl = Label(row, width=22, text=field+": ", anchor='w')
         tbx = Entry(row,show=passSim)
-        tbx.insert(0,"Escriba su email...")
-        row.pack(side = TOP, fill = X, padx = 5, pady = 5)
+        tbx.insert(0,"Escriba aqui...")
+        row.pack(side = sideTbx, fill = X, padx = 5, pady = 5)
         lbl.pack(side = LEFT)
         tbx.pack(side = RIGHT, expand = YES, fill = X)
         self.dataForm[field] = tbx
@@ -70,7 +71,7 @@ class GUI:
     def getDataJson(self):
         e = self.dataForm
         for key in e.keys():
-            if isinstance(e[key],Entry):
+            if isinstance(e[key],Entry) and key != 'Password':
                 self.dataJson[key] = e[key].get()
             elif isinstance(e[key],StringVar):
                 self.dataJson[key] = e[key].get()
@@ -78,11 +79,12 @@ class GUI:
                 self.dataJson[key] = [e[key].get(i) for i in e[key].curselection()]
             elif isinstance(e[key],ttk.Combobox):
                 self.dataJson[key] = e[key].get()
-            else:
-                print(key)
-                raise CustomException("REVISAR OBJETOS GUARDADOS!!!")
-        print(self.dataJson)
+            # else:
+            #     print(key)
+            #     raise CustomException("REVISAR OBJETOS GUARDADOS!!!")
+        # print(self.dataJson)
         self.saveJson(self.dataJson[list(self.dataJson.keys())[0]], self.dataJson)
+        return self.dataJson
     def saveJson(self, filename,data):
         with open(filename + ".json", 'w') as f:
             json.dump(data,f)

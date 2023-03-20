@@ -1,5 +1,6 @@
 import smtplib
 import ssl
+from tkinter import Entry
 
 class MailComunication:
     def __init__(self):
@@ -8,6 +9,8 @@ class MailComunication:
     def sendMail(self,mailMaker, email_password, server = "gmail"):
         # Deben mantenerse seta separacion, porque cada servidor 
         # usa un metodo se HandShaking que requiere esta forma.
+        if not isinstance(email_password,str):
+            email_password =  str(self.getPassword(email_password)) #
         if server == "gmail":
             with smtplib.SMTP_SSL(host= self.serverData[server][0], port = self.serverData[server][1],context=self.context) as smtp:
                 smtp.login(mailMaker.email_sender, email_password)
@@ -21,5 +24,8 @@ class MailComunication:
                 smtp.sendmail(mailMaker.email_sender, mailMaker.email_receiver, mailMaker.email.as_string())
         else:
             raise MyCustomException("Especifique un servidor valido!!!")
+    def getPassword(self, objectPass):
+        if isinstance(objectPass,Entry):
+            return objectPass.get()
 class MyCustomException(Exception):
     pass
