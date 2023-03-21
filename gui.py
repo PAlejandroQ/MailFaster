@@ -1,10 +1,11 @@
 from tkinter import  StringVar, Frame, Label, Tk, Entry, \
 TOP, LEFT, RIGHT, BOTTOM, X, YES, Radiobutton, Listbox, \
-Button, ttk
+Button, ttk, END
 import json
 from CustomException import CustomException
 from typing import Literal
 from DataManager import DataManager
+
 # Password at the end for security
 fields = ('From', 'To', 'CC','CCO')
 class GUI:
@@ -71,6 +72,7 @@ class GUI:
             self.lastObject = row
         else:
             var.trace_add('write',self.updateGuiTemplate)
+            self.varTracer = var
 
     def addButton(self, field, command):
         row = Frame(self.window)
@@ -138,7 +140,9 @@ class GUI:
     def exit(self):
         return self.window.quit
     def updateGuiTemplate(self,var, index, mode):
-        self.dataForm["Body"].insert(0,self.getTemplates(getTemplate= var.get()))
+        print(self.varTracer.get())
+        self.dataForm["Body"].delete(0, END)
+        self.dataForm["Body"].insert(0,self.getTemplates(getTemplate= self.varTracer.get()))
 
 def formMaker(window, fields):
     dataForm = {}

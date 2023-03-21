@@ -26,13 +26,14 @@ gui = GUI()
 gui.addTextBox("From")
 options = [("Uno","U"),("Multiple","M"),("Grupo","G")]
 gui.addRadioButton("To", options, initValue="U")
-gui.addTextBox("Subject")
+
 gui.addButton("Salir",gui.exit())
 gui.addButton("Enviar",sendEmail)
 gui.addTextBox("Password", passSim="*" ,sideTbx=BOTTOM)
 gui.addButton("Preview",gui.exit())
 gui.addTextBoxBody()
 gui.addComboBox("Templates",gui.getTemplates(),BOTTOM, isTrace=True)
+gui.addTextBox("Subject",sideTbx=BOTTOM)
 gui.setMainLoop()
 
 

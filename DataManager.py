@@ -7,7 +7,7 @@ class DataManager:
     def initStructure(self):
         self.data = {}
         self.data["emails"] = []
-        self.data["templates"] = {}
+        self.data["templates"] = []
         self.data["groups"] = {}
         self.saveJson()
     def loadPersistentData(self,filename = "dataMailFast"):
@@ -22,7 +22,7 @@ class DataManager:
         newTemplate["name"] = nameTemplate
         newTemplate["body"] = body
         newTemplate["parameters"] = self.extractParameters(body)
-        self.data["templates"] = newTemplate
+        self.data["templates"].append(newTemplate)
         self.saveJson()
     def extractParameters(self, body : str) -> dict:
         return {}
