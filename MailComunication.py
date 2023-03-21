@@ -1,7 +1,7 @@
 import smtplib
 import ssl
 from tkinter import Entry
-
+from CustomException import CustomException
 class MailComunication:
     def __init__(self):
         self.context = ssl.create_default_context()
@@ -23,9 +23,7 @@ class MailComunication:
                 smtp.login(mailMaker.email_sender, email_password)
                 smtp.sendmail(mailMaker.email_sender, mailMaker.email_receiver, mailMaker.email.as_string())
         else:
-            raise MyCustomException("Especifique un servidor valido!!!")
+            raise CustomException("Especifique un servidor valido!!!")
     def getPassword(self, objectPass):
         if isinstance(objectPass,Entry):
             return objectPass.get()
-class MyCustomException(Exception):
-    pass

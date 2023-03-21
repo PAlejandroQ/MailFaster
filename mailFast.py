@@ -21,7 +21,7 @@ def sendEmail():
 
     mailComunication = MailComunication()
     mailComunication.sendMail(mailMaker,gui.dataForm['Password'], server="outlook")
-    
+
 gui = GUI()
 gui.addTextBox("From")
 options = [("Uno","U"),("Multiple","M"),("Grupo","G")]
@@ -31,6 +31,8 @@ gui.addButton("Salir",gui.exit())
 gui.addButton("Enviar",sendEmail)
 gui.addTextBox("Password", passSim="*" ,sideTbx=BOTTOM)
 gui.addButton("Preview",gui.exit())
+gui.addTextBoxBody()
+gui.addComboBox("Templates",gui.getTemplates(),BOTTOM, isTrace=True)
 gui.setMainLoop()
 
 
