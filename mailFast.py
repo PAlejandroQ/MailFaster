@@ -17,7 +17,7 @@ def sendEmail():
     mailMaker = MailMaker()
     
     mailMaker.autoSetJson(gui.getDataJson())
-    mailMaker.setMesage(body)
+    # mailMaker.setMesage(body)
 
     mailComunication = MailComunication()
     mailComunication.sendMail(mailMaker,gui.dataForm['Password'], server="outlook")
@@ -30,7 +30,7 @@ gui.addRadioButton("To", options, initValue="U")
 gui.addButton("Salir",gui.exit())
 gui.addButton("Enviar",sendEmail)
 gui.addTextBox("Password", passSim="*" ,sideTbx=BOTTOM)
-gui.addButton("Preview",gui.exit())
+gui.addButton("SaveTemplate",gui.addNewData)
 gui.addTextBoxBody()
 gui.addComboBox("Templates",gui.getTemplates(),BOTTOM, isTrace=True)
 gui.addTextBox("Subject",sideTbx=BOTTOM)
@@ -46,16 +46,3 @@ gui.setMainLoop()
 
 # mailComunication = MailComunication()
 # mailComunication.sendMail(mailMaker,email_password, server="outlook")
-
-
-
-
-
-
-class controllerApp:
-    def __init__(self):
-        # Add check if is Online
-        pass
-    
-class templatesMail:
-    pass

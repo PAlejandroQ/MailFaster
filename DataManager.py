@@ -18,15 +18,33 @@ class DataManager:
         except JSONDecodeError:
             self.initStructure()
     def addTemplate(self, nameTemplate : str, body :str):
+        if len(nameTemplate)<=1 or len(body)<=1:
+            return
         newTemplate = {}
         newTemplate["name"] = nameTemplate
         newTemplate["body"] = body
         newTemplate["parameters"] = self.extractParameters(body)
-        self.data["templates"].append(newTemplate)
+        index = self.alreadyExist(nameTemplate)
+        if index == -1:
+            self.data["templates"].append(newTemplate)
+        else:
+            self.data["templates"][index] = newTemplate
         self.saveJson()
+    def alreadyExist(self, nameItem, typeItem = "Template") -> int:
+        for di in self.data["templates"]:
+                if di["name"] == nameItem:
+                    return self.data["templates"].index(di)
+        return -1
     def extractParameters(self, body : str) -> dict:
-        return {}
+        words = body.split()
+        parameters = {}
+        for word in words:
+            if word.startswith('$'):
+                parameters[word] = ""
+        return parameters
     def addEmail(self, email : str):
+        if len(email)<=1:
+            return
         self.data["emails"].append(email)
         self.saveJson()
     def addGroup(self, groupName : str, emails : list):

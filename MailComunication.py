@@ -22,6 +22,7 @@ class MailComunication:
                 smtp.ehlo() 
                 smtp.login(mailMaker.email_sender, email_password)
                 smtp.sendmail(mailMaker.email_sender, mailMaker.email_receiver, mailMaker.email.as_string())
+                smtp.quit()
         else:
             raise CustomException("Especifique un servidor valido!!!")
     def getPassword(self, objectPass):

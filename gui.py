@@ -1,6 +1,6 @@
-from tkinter import  StringVar, Frame, Label, Tk, Entry, \
+from tkinter import  StringVar, Frame, Label, Tk, Entry, Text, \
 TOP, LEFT, RIGHT, BOTTOM, X, YES, Radiobutton, Listbox, \
-Button, ttk, END
+Button, ttk, END, WORD, INSERT
 import json
 from CustomException import CustomException
 from typing import Literal
@@ -26,8 +26,8 @@ class GUI:
         self.dataForm[field] = tbx
     def addTextBoxBody(self, sideTbx : Literal['left', 'right', 'top', 'bottom']  = BOTTOM, insertTxt = ""):
         row = Frame(self.window)
-        tbx = Entry(row)
-        tbx.insert(0,insertTxt)
+        tbx = Text(row, wrap=WORD)
+        tbx.insert(INSERT,insertTxt)
         row.pack(side = sideTbx, fill = X, padx = 5, pady = 5)
         tbx.pack(side = RIGHT, expand = YES, fill = X)
         self.dataForm["Body"] = tbx
@@ -53,8 +53,8 @@ class GUI:
         row.pack(side = TOP, fill = X, padx = 5, pady = 5)
         # lbl.pack(side = LEFT)
         listBox = Listbox(row, selectmode="multiple")
-        for i, value in enumerate(listOptions,1):
-            listBox.insert(i,value)
+        for value in listOptions:
+            listBox.insert(END,value)
         listBox.pack(side = RIGHT, expand = YES, fill = X)
         self.dataForm[field] = listBox
         self.lastObject = row
@@ -93,6 +93,8 @@ class GUI:
                 self.dataJson[key] = [e[key].get(i) for i in e[key].curselection()]
             elif isinstance(e[key],ttk.Combobox):
                 self.dataJson[key] = e[key].get()
+            elif isinstance(e[key], Text):
+                self.dataJson[key] = e[key].get("1.0", "end")
             # else:
             #     print(key)
             #     raise CustomException("REVISAR OBJETOS GUARDADOS!!!")
@@ -124,7 +126,7 @@ class GUI:
             listOptions = self.dataManager.data["emails"]
             # listOptions = ["example1@gmail.com","example2@gmail.com"]
         return listOptions
-    def getTemplates(self, getTemplate:str = "" ):
+    def getTemplates(self, getTemplate:str = "" )-> list | str:
         if getTemplate == "":
             templatesNames = []
             for di in self.dataManager.data["templates"]:
@@ -134,6 +136,7 @@ class GUI:
             for di in self.dataManager.data["templates"]:
                 if di["name"] == getTemplate:
                     return di["body"]
+            return ""
     def clearLastObject(self):
         if self.lastObject is not None:
             self.lastObject.pack_forget()
@@ -141,8 +144,16 @@ class GUI:
         return self.window.quit
     def updateGuiTemplate(self,var, index, mode):
         print(self.varTracer.get())
-        self.dataForm["Body"].delete(0, END)
-        self.dataForm["Body"].insert(0,self.getTemplates(getTemplate= self.varTracer.get()))
+        self.dataForm["Body"].delete("1.0", END)
+        self.dataForm["Body"].insert("1.0",self.getTemplates(getTemplate= self.varTracer.get()))
+    def addNewData(self):
+        self.dataManager.addTemplate(self.varTracer.get(), self.dataForm["Body"].get("1.0","end"))
+        self.dataManager.addEmail(self.dataForm['To'].get())
+        self.dataManager.loadPersistentData()
+
+        self.dataForm["Templates"].config(values=self.getTemplates())
+        self.dataForm['To'].config(values=self.getEmails())
+        
 
 def formMaker(window, fields):
     dataForm = {}
@@ -156,30 +167,3 @@ def formMaker(window, fields):
         tbx.pack(side = RIGHT, expand = YES, fill = X)
         dataForm[field] = tbx
     return dataForm
-
-
-def someFunction(e):
-    pass
-
-def calcular(e):
-    dataJson = {}
-    for key in e.keys():
-        dataJson[key] = e[key].get()
-    print(dataJson)
-    saveJson(dataJson[list(dataJson.keys())[0]], dataJson)
-
-def saveJson(filename,data):
-    with open(filename + ".json", 'w') as f:
-        json.dump(data,f)
-
-if __name__=='__main__':
-    window = Tk()
-    window.title("Formulario")
-    fields = ('Nombres', 'Apellidos', 'Correo', 'Telefono')
-    dataForm = formMaker(window, fields)
-    window.bind('<Return>',(lambda event, e = dataForm: someFunction(e)))
-    b1 = Button(window, text="Guardar", command=(lambda e = dataForm: calcular(e)))
-    b1.pack(side = LEFT, padx = 5,pady = 5)
-    b2 = Button(window, text="Salir", command = window.quit)
-    b2.pack(side = LEFT, padx = 5,pady = 5)
-    window.mainloop()
