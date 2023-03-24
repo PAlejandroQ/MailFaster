@@ -13,6 +13,12 @@ class DataManager:
     def loadPersistentData(self,filename = "dataMailFast"):
         self.filenameData = filename
         try:
+            with open(filename + '.json', "x") as f:
+                pass
+        except FileExistsError:
+            pass
+
+        try:
             with open(self.filenameData +'.json', 'r') as f:
                 self.data = json.load(f)
         except JSONDecodeError:
@@ -30,7 +36,7 @@ class DataManager:
         else:
             self.data["templates"][index] = newTemplate
         self.saveJson()
-    def alreadyExist(self, nameItem, typeItem = "Template") -> int:
+    def alreadyExist(self, nameItem) -> int:
         for di in self.data["templates"]:
                 if di["name"] == nameItem:
                     return self.data["templates"].index(di)
@@ -45,8 +51,9 @@ class DataManager:
     def addEmail(self, email : str):
         if len(email)<=1:
             return
-        self.data["emails"].append(email)
-        self.saveJson()
+        if email not in self.data["emails"]:
+            self.data["emails"].append(email)
+            self.saveJson()
     def addGroup(self, groupName : str, emails : list):
         newGroup = {}
         newGroup[groupName] = emails
